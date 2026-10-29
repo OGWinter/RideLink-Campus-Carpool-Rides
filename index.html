@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RideLink — Campus Carpool Connect | Bhopal Student Mobility</title>
+  <meta name="description" content="Sustainable, safe, and student-powered campus carpooling for university students across Bhopal (MANIT, Barkatullah University, RGPV).">
+  
+  <!-- Fonts: Plus Jakarta Sans for crisp modern UI & Fraunces for warm editorial accents -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+  
+  <!-- GSAP Animation Library with fallback tolerance -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <!-- Lucide Icons CDN with inline fallback -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Top Accessibility Announcement -->
+  <div id="a11y-announcer" class="sr-only" aria-live="polite"></div>
+
+  <!-- Main App Wrapper -->
+  <div class="app-layout">
+    
+    <!-- LEFT SIDEBAR NAVIGATION (Desktop) -->
+    <aside class="sidebar" id="sidebar" aria-label="Main Navigation">
+      <div class="sidebar-brand">
+        <div class="brand-logo">
+          <div class="logo-icon-wrap">
+            <i data-lucide="compass" class="brand-svg"></i>
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">RideLink</span>
+            <span class="brand-sub">Bhopal Campus Mobility</span>
+          </div>
+        </div>
+        <button id="mobile-sidebar-close" class="btn-icon-ghost mobile-only" aria-label="Close navigation">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <!-- Demo Persona Ribbon in Sidebar -->
+      <div class="demo-persona-card" id="sidebar-persona-badge">
+        <div class="persona-avatar-wrap">
+          <img src="" alt="User Avatar" class="persona-avatar" id="sidebar-avatar">
+          <span class="persona-role-badge" id="sidebar-role-badge">Driver</span>
+        </div>
+        <div class="persona-info">
+          <div class="persona-name-row">
+            <strong class="persona-name" id="sidebar-user-name">Aarav Sharma</strong>
+            <span class="demo-tag">DEMO</span>
+          </div>
+          <span class="persona-dept" id="sidebar-user-dept">Senior • MANIT Bhopal</span>
+        </div>
+        <button class="btn-switch-persona" id="btn-quick-switch-persona" title="Switch Demo Account">
+          <i data-lucide="arrow-left-right"></i>
+        </button>
+      </div>
+
+      <!-- City & Hub Locator Pill -->
+      <div class="sidebar-city-tag">
+        <i data-lucide="map-pin"></i>
+        <span>Bhopal, Madhya Pradesh</span>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="sidebar-nav">
+        <span class="nav-section-title">Commute Hub</span>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="#dashboard" class="nav-link active" data-view="dashboard">
+              <i data-lucide="layout-dashboard"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#find-rides" class="nav-link" data-view="find-rides">
+              <i data-lucide="search"></i>
+              <span>Find Rides</span>
+              <span class="nav-badge" id="nav-rides-count">0</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#offer-ride" class="nav-link" data-view="offer-ride">
+              <i data-lucide="plus-circle"></i>
+              <span>Offer a Ride</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#my-bookings" class="nav-link" data-view="my-bookings">
+              <i data-lucide="ticket"></i>
+              <span>My Bookings</span>
+              <span class="nav-badge alert-badge" id="nav-bookings-count" style="display:none;">0</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#driver-requests" class="nav-link" data-view="driver-requests">
+              <i data-lucide="inbox"></i>
+              <span>Driver Requests</span>
+              <span class="nav-badge pending-badge" id="nav-requests-count" style="display:none;">0</span>
+            </a>
+          </li>
+        </ul>
+
+        <span class="nav-section-title">Bhopal Hubs & Activity</span>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="#history" class="nav-link" data-view="history">
+              <i data-lucide="history"></i>
+              <span>Ride History</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#campus-hubs" class="nav-link" data-view="campus-hubs">
+              <i data-lucide="map-pin"></i>
+              <span>Bhopal Hubs</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#profile" class="nav-link" data-view="profile">
+              <i data-lucide="user"></i>
+              <span>Profile & Vehicle</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <div class="demo-mode-notice">
+          <div class="demo-notice-header">
+            <i data-lucide="shield-check" class="shield-icon"></i>
+            <span>Demo Mode • Bhopal Hubs</span>
+          </div>
+          <p class="demo-notice-text">Switch roles below to simulate driver & passenger approvals with Bhopal student profiles.</p>
+          <div class="demo-btn-group">
+            <button class="btn btn-sm btn-outline-forest" id="btn-open-persona-modal">
+              <i data-lucide="users"></i> Switch User
+            </button>
+            <button class="btn btn-sm btn-ghost-danger" id="btn-reset-demo" title="Restore fresh Bhopal demo rides and requests">
+              <i data-lucide="rotate-ccw"></i> Reset
+            </button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN BODY CONTAINER -->
+    <div class="main-wrapper">
+      
+      <!-- TOP NAVIGATION BAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="mobile-sidebar-toggle" class="btn-icon-ghost mobile-only" aria-label="Open navigation menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="topbar-welcome">
+            <h1 class="topbar-title" id="page-title">Campus Dashboard</h1>
+            <span class="topbar-date" id="topbar-current-date">Today • Bhopal (IST)</span>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Quick Search Trigger -->
+          <div class="topbar-search-box">
+            <i data-lucide="search" class="search-box-icon"></i>
+            <input type="text" id="topbar-quick-search" placeholder="Search Bhopal hub (e.g. MP Nagar, RKMP)..." aria-label="Search destination">
+          </div>
+
+          <!-- Notification Dropdown Button -->
+          <div class="notification-wrapper">
+            <button class="btn-icon-ghost" id="btn-notifications-toggle" aria-label="View notifications" aria-haspopup="true" aria-expanded="false">
+              <i data-lucide="bell"></i>
+              <span class="notification-indicator" id="notif-badge" style="display: none;"></span>
+            </button>
+
+            <!-- Dropdown Panel -->
+            <div class="notification-panel" id="notifications-panel" role="region" aria-label="Notifications panel">
+              <div class="notif-panel-header">
+                <div>
+                  <h4 class="notif-panel-title">Notifications</h4>
+                  <span class="notif-panel-subtitle" id="notif-count-text">0 new notifications</span>
+                </div>
+                <button class="btn-text-link" id="btn-mark-all-read">Mark all read</button>
+              </div>
+              <div class="notif-list" id="notif-list-container">
+                <!-- Notifications injected dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Demo User Chip -->
+          <div class="topbar-user-pill" id="topbar-user-menu-btn" role="button" tabindex="0" title="Click to switch persona">
+            <img src="" alt="Avatar" class="user-pill-avatar" id="topbar-avatar">
+            <div class="user-pill-text">
+              <span class="user-pill-name" id="topbar-user-name">Aarav Sharma</span>
+              <span class="user-pill-role" id="topbar-user-role">Driver Persona</span>
+            </div>
+            <i data-lucide="chevron-down" class="pill-chevron"></i>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT VIEWS CONTAINER -->
+      <main class="content-container" id="content-container">
+
+        <!-- ==============================================
+             1. DASHBOARD VIEW
+             ============================================== -->
+        <section id="dashboard-view" class="view-section active" aria-labelledby="dash-heading">
+          <!-- Hero Banner -->
+          <div class="dashboard-hero" id="dashboard-hero-card">
+            <div class="hero-content">
+              <span class="hero-pill">🌿 Sustainable Bhopal Mobility</span>
+              <h2 class="hero-title" id="dash-greeting">Welcome back, Aarav!</h2>
+              <p class="hero-desc">Share student commutes between MANIT, Barkatullah University, RGPV, and major transit hubs. Transparent fuel cost sharing in Indian Rupees (₹).</p>
+              <div class="hero-actions">
+                <button class="btn btn-primary" id="btn-hero-find-ride">
+                  <i data-lucide="search"></i> Find a Commute
+                </button>
+                <button class="btn btn-secondary" id="btn-hero-offer-ride">
+                  <i data-lucide="plus"></i> Offer a Seat
+                </button>
+              </div>
+            </div>
+            <div class="hero-stats-badge">
+              <div class="badge-icon-wrap">
+                <i data-lucide="leaf"></i>
+              </div>
+              <div class="badge-stats-text">
+                <strong id="stat-co2-saved">24.5 kg</strong>
+                <span>CO₂ emissions saved across Bhopal</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Driver Action Required Alert (Visible when driver has pending inquiries) -->
+          <div id="dashboard-driver-alert" style="display:none;"></div>
+
+          <!-- Quick Stats Grid -->
+          <div class="stats-grid" id="dashboard-stats-grid">
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Upcoming Bookings</span>
+                <div class="stat-icon-wrap icon-green">
+                  <i data-lucide="calendar"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="stat-upcoming-bookings">0</div>
+              <div class="stat-footer text-positive">
+                <i data-lucide="check-circle-2"></i>
+                <span>Active & confirmed seats</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Estimated Money Saved</span>
+                <div class="stat-icon-wrap icon-amber">
+                  <i data-lucide="indian-rupee"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="stat-money-saved">₹2,450</div>
+              <div class="stat-footer">
+                <span>vs. auto-rickshaws & solo fuel</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-label">Rides Offered / Taken</span>
+                <div class="stat-icon-wrap icon-emerald">
+                  <i data-lucide="car"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="stat-rides-completed">8</div>
+              <div class="stat-footer">
+                <span id="stat-role-desc">Verified Student Commuter</span>
+              </div>
+            </div>
+
+            <div class="stat-card" id="stat-card-pending-inquiries" style="cursor: pointer;" title="Click to review and approve passenger inquiries">
+              <div class="stat-card-header">
+                <span class="stat-label">Pending Inquiries</span>
+                <div class="stat-icon-wrap icon-blue">
+                  <i data-lucide="bell-ring"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="stat-pending-inquiries">0</div>
+              <div class="stat-footer" id="stat-pending-footer">
+                <span>Awaiting review</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dashboard Quick Search Widget -->
+          <div class="card dashboard-search-card" id="dashboard-search-card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Where are you commuting in Bhopal today?</h3>
+                <p class="card-subtitle">Connect with verified student carpools across MANIT, BU, RGPV, MP Nagar, and Railway Stations.</p>
+              </div>
+            </div>
+            <form id="dash-quick-search-form" class="quick-search-form">
+              <div class="form-group">
+                <label for="dash-search-from" class="form-label">Leaving From</label>
+                <div class="input-icon-wrap">
+                  <i data-lucide="map-pin"></i>
+                  <input type="text" id="dash-search-from" class="form-control" placeholder="e.g. MANIT Bhopal, Barkatullah University">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="dash-search-to" class="form-label">Going To</label>
+                <div class="input-icon-wrap">
+                  <i data-lucide="navigation"></i>
+                  <input type="text" id="dash-search-to" class="form-control" placeholder="e.g. MP Nagar, Rani Kamlapati Station">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="dash-search-date" class="form-label">Travel Date (IST)</label>
+                <div class="input-icon-wrap">
+                  <i data-lucide="calendar"></i>
+                  <input type="date" id="dash-search-date" class="form-control">
+                </div>
+              </div>
+              <div class="form-group form-action-align">
+                <button type="submit" class="btn btn-primary btn-block">
+                  <i data-lucide="search"></i> Find Rides
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Two Columns: Available Rides Preview & Recent Activity -->
+          <div class="dashboard-split-layout">
+            <!-- Left: Featured Available Rides -->
+            <div class="split-col-main">
+              <div class="section-heading-row">
+                <div>
+                  <h3 class="section-title">Available Bhopal Carpools</h3>
+                  <p class="section-subtitle">Real upcoming carpools departing soon across campus hubs</p>
+                </div>
+                <button class="btn btn-text-link" id="btn-see-all-rides">
+                  View All Rides <i data-lucide="chevron-right"></i>
+                </button>
+              </div>
+              <div class="rides-grid" id="dashboard-rides-preview">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <!-- Right: Activity & Safety Card -->
+            <div class="split-col-side">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Recent Activity</h3>
+                </div>
+                <div class="activity-feed" id="dashboard-activity-feed">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+
+              <!-- Campus Safety & Fair-Share Policy Pill -->
+              <div class="card safe-ride-card">
+                <div class="safety-icon-box">
+                  <i data-lucide="shield-check"></i>
+                </div>
+                <h4 class="safety-title">Safe & Non-Profit Campus Policy</h4>
+                <p class="safety-desc">RideLink drivers share genuine vehicle fuel expenses on an equal per-person basis in ₹. No commercial markups or hidden surcharges.</p>
+                <ul class="safety-bullets">
+                  <li><i data-lucide="check"></i> Verified college ID credentials</li>
+                  <li><i data-lucide="check"></i> Optional Women-Only carpools</li>
+                  <li><i data-lucide="check"></i> Designated Bhopal campus safety hubs</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==============================================
+             2. FIND RIDES VIEW
+             ============================================== -->
+        <section id="find-rides-view" class="view-section" aria-labelledby="find-heading">
+          <div class="page-header-row">
+            <div>
+              <h2 class="view-title" id="find-heading">Browse Bhopal Campus Rides</h2>
+              <p class="view-subtitle">Filter by campus hub, destination, departure time, seat count, and preferences.</p>
+            </div>
+            <button class="btn btn-secondary" id="btn-switch-to-offer">
+              <i data-lucide="plus"></i> Offer a Ride Instead
+            </button>
+          </div>
+
+          <!-- Comprehensive Filter Controls -->
+          <div class="card filter-panel">
+            <div class="filter-grid">
+              <div class="form-group">
+                <label for="filter-origin" class="form-label">Pickup Hub / Origin</label>
+                <div class="input-icon-wrap">
+                  <i data-lucide="map-pin"></i>
+                  <input type="text" id="filter-origin" class="form-control" placeholder="Any Bhopal hub (e.g. MANIT)">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="filter-destination" class="form-label">Destination</label>
+                <div class="input-icon-wrap">
+                  <i data-lucide="navigation"></i>
+                  <input type="text" id="filter-destination" class="form-control" placeholder="Where to? (e.g. MP Nagar, RKMP)">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="filter-date" class="form-label">Departure Date (IST)</label>
+                <div class="input-icon-wrap">
+                  <i data-lucide="calendar"></i>
+                  <input type="date" id="filter-date" class="form-control">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="filter-seats" class="form-label">Min Available Seats</label>
+                <select id="filter-seats" class="form-control">
+                  <option value="any">Any seats (1+)</option>
+                  <option value="1">1+ Seat</option>
+                  <option value="2">2+ Seats</option>
+                  <option value="3">3+ Seats</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="filter-max-price" class="form-label">Max Cost per Seat: <span id="price-slider-label">₹150</span></label>
+                <input type="range" id="filter-max-price" min="20" max="250" step="5" value="150" class="range-slider">
+              </div>
+
+              <div class="form-group">
+                <label for="filter-sort" class="form-label">Sort By</label>
+                <select id="filter-sort" class="form-control">
+                  <option value="earliest">Earliest Departure</option>
+                  <option value="price-asc">Price: Low to High (₹)</option>
+                  <option value="seats-desc">Most Seats Available</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Additional Preference Toggles -->
+            <div class="filter-footer-row">
+              <div class="filter-checkboxes">
+                <label class="custom-checkbox">
+                  <input type="checkbox" id="filter-women-only">
+                  <span class="checkbox-indicator"></span>
+                  <span class="checkbox-label">
+                    <i data-lucide="shield" class="checkbox-icon text-emerald"></i>
+                    Women-Only Carpool Preference
+                  </span>
+                </label>
+
+                <label class="custom-checkbox">
+                  <input type="checkbox" id="filter-hide-full" checked>
+                  <span class="checkbox-indicator"></span>
+                  <span class="checkbox-label">Hide full rides (0 seats)</span>
+                </label>
+              </div>
+
+              <button class="btn btn-ghost" id="btn-clear-filters">
+                <i data-lucide="rotate-ccw"></i> Reset Filters
+              </button>
+            </div>
+          </div>
+
+          <!-- Rides Count Bar -->
+          <div class="rides-meta-bar">
+            <span class="rides-found-text" id="rides-found-count">Showing available rides</span>
+            <div class="active-chips" id="active-filter-chips"></div>
+          </div>
+
+          <!-- Rides Grid Container -->
+          <div class="rides-grid" id="find-rides-container">
+            <!-- Dynamic ride cards -->
+          </div>
+
+          <!-- Empty State (Hidden when rides exist) -->
+          <div class="empty-state-card" id="find-rides-empty" style="display: none;">
+            <div class="empty-icon-wrap">
+              <i data-lucide="car-off"></i>
+            </div>
+            <h3 class="empty-title">No carpools found matching your filters</h3>
+            <p class="empty-desc">Try clearing some filters, selecting a different date, or be the first student to publish a carpool on this route!</p>
+            <div class="empty-actions">
+              <button class="btn btn-outline-forest" id="btn-empty-clear">Clear Filters</button>
+              <button class="btn btn-primary" id="btn-empty-offer">Offer This Ride</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==============================================
+             3. OFFER A RIDE VIEW
+             ============================================== -->
+        <section id="offer-ride-view" class="view-section" aria-labelledby="offer-heading">
+          <div class="page-header-row">
+            <div>
+              <h2 class="view-title" id="offer-heading">Offer a Campus Ride</h2>
+              <p class="view-subtitle">Publish empty seats in your car, split fuel expenses in ₹, and travel safely with peers.</p>
+            </div>
+          </div>
+
+          <div class="offer-ride-layout">
+            <!-- Left: Form -->
+            <div class="offer-form-card card">
+              <form id="offer-ride-form" novalidate>
+                <div class="form-section-title">
+                  <i data-lucide="map"></i> Route & Locations in Bhopal
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="offer-origin" class="form-label required">Pickup Hub / Origin</label>
+                    <div class="input-icon-wrap">
+                      <i data-lucide="map-pin"></i>
+                      <input type="text" id="offer-origin" class="form-control" list="campus-origins-list" placeholder="e.g. MANIT Bhopal" required>
+                      <datalist id="campus-origins-list">
+                        <option value="MANIT Bhopal (Main Gate)">
+                        <option value="Barkatullah University (Hoshangabad Rd Gate)">
+                        <option value="RGPV Campus (Airport Road Gate)">
+                        <option value="Rani Kamlapati Railway Station (RKMP)">
+                        <option value="MP Nagar Zone-1 (DB Mall Circle)">
+                        <option value="New Market (Topkhana / TT Nagar)">
+                        <option value="Arera Colony (10 No. Market)">
+                        <option value="BHEL Township (Piplani)">
+                        <option value="Kolar Road (Sarvadharma)">
+                        <option value="Bittan Market Haat Ground">
+                        <option value="Shahpura Lake Circle">
+                        <option value="Lalghati Square">
+                        <option value="ISBT Bhopal">
+                        <option value="Bhopal Junction (Platform 6)">
+                      </datalist>
+                    </div>
+                    <span class="field-error" id="error-offer-origin"></span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="offer-destination" class="form-label required">Final Destination</label>
+                    <div class="input-icon-wrap">
+                      <i data-lucide="navigation"></i>
+                      <input type="text" id="offer-destination" class="form-control" list="campus-destinations-list" placeholder="e.g. Rani Kamlapati Station" required>
+                      <datalist id="campus-destinations-list">
+                        <option value="Rani Kamlapati Railway Station (RKMP)">
+                        <option value="MP Nagar Zone-1 (DB Mall Circle)">
+                        <option value="New Market (Topkhana / TT Nagar)">
+                        <option value="Arera Colony (10 No. Market)">
+                        <option value="BHEL Township (Piplani)">
+                        <option value="Kolar Road (Sarvadharma)">
+                        <option value="Bittan Market Haat Ground">
+                        <option value="Shahpura Lake Circle">
+                        <option value="Lalghati Square">
+                        <option value="ISBT Bhopal">
+                        <option value="Bhopal Junction (Platform 6)">
+                        <option value="MANIT Bhopal (Main Gate)">
+                        <option value="Barkatullah University (Hoshangabad Rd Gate)">
+                        <option value="RGPV Campus (Airport Road Gate)">
+                      </datalist>
+                    </div>
+                    <span class="field-error" id="error-offer-destination"></span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="offer-intermediate-stops" class="form-label">
+                    Intermediate Stops <span class="label-sub">(optional, separated by commas)</span>
+                  </label>
+                  <div class="input-icon-wrap">
+                    <i data-lucide="milestone"></i>
+                    <input type="text" id="offer-intermediate-stops" class="form-control" placeholder="e.g. Bittan Market, DB City Mall, MP Nagar">
+                  </div>
+                  <span class="help-text">Passengers can request pickup or drop-off along these ordered stops in Bhopal.</span>
+                </div>
+
+                <div class="form-section-title">
+                  <i data-lucide="clock"></i> Schedule & Capacity
+                </div>
+
+                <div class="form-row-3">
+                  <div class="form-group">
+                    <label for="offer-date" class="form-label required">Departure Date (IST)</label>
+                    <div class="input-icon-wrap">
+                      <i data-lucide="calendar"></i>
+                      <input type="date" id="offer-date" class="form-control" required>
+                    </div>
+                    <span class="field-error" id="error-offer-date"></span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="offer-time" class="form-label required">Departure Time</label>
+                    <div class="input-icon-wrap">
+                      <i data-lucide="clock"></i>
+                      <input type="time" id="offer-time" class="form-control" required>
+                    </div>
+                    <span class="field-error" id="error-offer-time"></span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="offer-seats" class="form-label required">Available Seats</label>
+                    <div class="input-icon-wrap">
+                      <i data-lucide="users"></i>
+                      <select id="offer-seats" class="form-control" required>
+                        <option value="1">1 Passenger</option>
+                        <option value="2">2 Passengers</option>
+                        <option value="3" selected>3 Passengers</option>
+                        <option value="4">4 Passengers</option>
+                      </select>
+                    </div>
+                    <span class="field-error" id="error-offer-seats"></span>
+                  </div>
+                </div>
+
+                <div class="form-section-title">
+                  <i data-lucide="receipt"></i> Transparent Fuel Cost Sharing (₹)
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="offer-total-cost" class="form-label required">Estimated Total Trip Fuel Cost (₹)</label>
+                    <div class="input-icon-wrap">
+                      <i data-lucide="indian-rupee"></i>
+                      <input type="number" id="offer-total-cost" class="form-control" min="20" max="800" step="10" value="120" required>
+                    </div>
+                    <span class="field-error" id="error-offer-total-cost"></span>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Calculated Share per Passenger</label>
+                    <div class="fuel-split-display" id="offer-calculated-split">
+                      <strong>₹30</strong>
+                      <span>/ passenger</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-section-title">
+                  <i data-lucide="shield"></i> Preferences & Guidelines
+                </div>
+
+                <div class="form-group">
+                  <label class="custom-checkbox">
+                    <input type="checkbox" id="offer-women-only">
+                    <span class="checkbox-indicator"></span>
+                    <span class="checkbox-label">
+                      <strong>Women-Only Carpool</strong>
+                      <span class="checkbox-desc">Only verified female students/faculty can request a seat.</span>
+                    </span>
+                  </label>
+                </div>
+
+                <div class="form-group">
+                  <label for="offer-notes" class="form-label">Notes for Passengers <span class="label-sub">(optional)</span></label>
+                  <textarea id="offer-notes" class="form-control" rows="3" placeholder="e.g. Leaving from MANIT Gate 1 flagpole right at 5:30 PM. Room for backpacks in trunk."></textarea>
+                </div>
+
+                <div class="form-actions-row">
+                  <button type="submit" class="btn btn-primary btn-lg" id="btn-submit-offer">
+                    <i data-lucide="check-circle"></i> Publish Bhopal Ride
+                  </button>
+                  <button type="button" class="btn btn-ghost" id="btn-reset-offer-form">Clear Form</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Right: Interactive Live Preview Card -->
+            <div class="offer-preview-col">
+              <div class="preview-sticky-wrap">
+                <div class="card preview-card">
+                  <div class="preview-badge-row">
+                    <span class="preview-tag">Live Card Preview</span>
+                    <span class="badge badge-success">Publishing as: <span id="preview-author-name">Aarav</span></span>
+                  </div>
+
+                  <div class="ride-card-preview-body">
+                    <div class="preview-driver-header">
+                      <img src="" alt="Driver Avatar" class="driver-avatar-sm" id="preview-driver-avatar">
+                      <div>
+                        <h4 class="preview-driver-name" id="preview-driver-name">Aarav Sharma</h4>
+                        <span class="driver-car-sub" id="preview-driver-car">Hyundai i20 (Silver)</span>
+                      </div>
+                      <div class="preview-price-tag">
+                        <strong id="preview-price-val">₹30</strong>
+                        <span>/ seat</span>
+                      </div>
+                    </div>
+
+                    <div class="preview-route-box">
+                      <div class="preview-route-node">
+                        <div class="node-dot origin-dot"></div>
+                        <div>
+                          <strong id="preview-origin-text">MANIT Bhopal (Main Gate)</strong>
+                          <span class="route-sub" id="preview-time-text">Today, 5:30 PM</span>
+                        </div>
+                      </div>
+                      <div class="preview-route-line"></div>
+                      <div class="preview-route-node">
+                        <div class="node-dot dest-dot"></div>
+                        <div>
+                          <strong id="preview-dest-text">Rani Kamlapati Railway Station</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="preview-badges-row" id="preview-badges-row">
+                      <span class="badge badge-neutral" id="preview-seats-badge">3 seats available</span>
+                      <span class="badge badge-emerald" id="preview-women-badge" style="display:none;">Women-Only</span>
+                    </div>
+
+                    <div class="preview-split-explainer">
+                      <i data-lucide="info"></i>
+                      <span>Fuel split logic: <span id="preview-split-formula">₹120 total ÷ (3 passengers + 1 driver) = ₹30/person</span></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Driver Policy Checklist -->
+                <div class="card driver-tips-card">
+                  <h4 class="tips-card-title"><i data-lucide="sparkles"></i> Bhopal Campus Commute Guidelines</h4>
+                  <ul class="tips-list">
+                    <li>Confirm passenger pickup at designated campus gates.</li>
+                    <li>Always verify college ID cards upon boarding.</li>
+                    <li>All fuel contributions are non-commercial reimbursements.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==============================================
+             4. MY BOOKINGS VIEW (Passenger View)
+             ============================================== -->
+        <section id="my-bookings-view" class="view-section" aria-labelledby="bookings-heading">
+          <div class="page-header-row">
+            <div>
+              <h2 class="view-title" id="bookings-heading">My Ride Bookings</h2>
+              <p class="view-subtitle">Track your seat requests, view confirmation status, or cancel bookings.</p>
+            </div>
+            <button class="btn btn-primary" id="btn-bookings-find-more">
+              <i data-lucide="search"></i> Search More Rides
+            </button>
+          </div>
+
+          <!-- Status Filter Tabs -->
+          <div class="tab-pill-bar">
+            <button class="tab-pill active" data-filter="all">All Bookings (<span id="count-tab-all">0</span>)</button>
+            <button class="tab-pill" data-filter="APPROVED">Confirmed (<span id="count-tab-approved">0</span>)</button>
+            <button class="tab-pill" data-filter="PENDING">Pending Review (<span id="count-tab-pending">0</span>)</button>
+            <button class="tab-pill" data-filter="REJECTED">Declined (<span id="count-tab-rejected">0</span>)</button>
+            <button class="tab-pill" data-filter="CANCELLED">Cancelled (<span id="count-tab-cancelled">0</span>)</button>
+          </div>
+
+          <!-- Bookings Container -->
+          <div class="bookings-list" id="bookings-list-container">
+            <!-- Dynamic booking cards -->
+          </div>
+
+          <!-- Empty Bookings State -->
+          <div class="empty-state-card" id="bookings-empty" style="display: none;">
+            <div class="empty-icon-wrap">
+              <i data-lucide="ticket"></i>
+            </div>
+            <h3 class="empty-title">No bookings found in this category</h3>
+            <p class="empty-desc">You haven't requested any rides matching this status yet. Browse campus carpools to find your next Bhopal commute!</p>
+            <button class="btn btn-primary" id="btn-empty-browse-rides">Find a Ride</button>
+          </div>
+        </section>
+
+        <!-- ==============================================
+             5. DRIVER REQUEST MANAGEMENT VIEW
+             ============================================== -->
+        <section id="driver-requests-view" class="view-section" aria-labelledby="requests-heading">
+          <div class="page-header-row">
+            <div>
+              <h2 class="view-title" id="requests-heading">Driver Seat Inquiries & Approvals</h2>
+              <p class="view-subtitle">Review incoming passenger requests for rides you published.</p>
+            </div>
+            <div class="driver-summary-pill">
+              <i data-lucide="car"></i>
+              <span id="driver-active-rides-count">0 Published Rides</span>
+            </div>
+          </div>
+
+          <!-- Driver Filter Toolbar -->
+          <div class="card driver-toolbar-card">
+            <div class="driver-toolbar-grid">
+              <div class="form-group">
+                <label for="driver-select-ride" class="form-label">Filter by Offered Ride</label>
+                <select id="driver-select-ride" class="form-control">
+                  <option value="all">All My Offered Rides</option>
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="driver-status-filter" class="form-label">Request Status</label>
+                <select id="driver-status-filter" class="form-control">
+                  <option value="all">All Statuses</option>
+                  <option value="PENDING" selected>Pending Review Only</option>
+                  <option value="APPROVED">Approved Requests</option>
+                  <option value="REJECTED">Declined Requests</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inquiries List -->
+          <div class="driver-requests-list" id="driver-requests-container">
+            <!-- Dynamic passenger request items -->
+          </div>
+
+          <!-- Empty Driver Requests State -->
+          <div class="empty-state-card" id="driver-requests-empty" style="display: none;">
+            <div class="empty-icon-wrap">
+              <i data-lucide="check-check"></i>
+            </div>
+            <h3 class="empty-title">No pending requests right now</h3>
+            <p class="empty-desc">You're all caught up! When students request seats on your Bhopal carpools, they will appear here for your approval.</p>
+            <div class="empty-actions">
+              <button class="btn btn-secondary" id="btn-empty-offer-another">Offer Another Ride</button>
+              <button class="btn btn-outline-forest" id="btn-empty-show-all-requests">View All Past Inquiries</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==============================================
+             6. RIDE HISTORY VIEW
+             ============================================== -->
+        <section id="history-view" class="view-section" aria-labelledby="history-heading">
+          <div class="page-header-row">
+            <div>
+              <h2 class="view-title" id="history-heading">Trip History & Carbon Receipts</h2>
+              <p class="view-subtitle">Archived completed trips and cancelled requests with verified environmental savings.</p>
+            </div>
+            <div class="history-metrics-pill">
+              <i data-lucide="leaf" class="text-emerald"></i>
+              <span id="history-lifetime-co2">Total CO₂ Saved: 34.2 kg</span>
+            </div>
+          </div>
+
+          <!-- History List Container -->
+          <div class="history-timeline" id="history-timeline-container">
+            <!-- Populated via JS -->
+          </div>
+
+          <!-- Empty History -->
+          <div class="empty-state-card" id="history-empty" style="display: none;">
+            <div class="empty-icon-wrap">
+              <i data-lucide="history"></i>
+            </div>
+            <h3 class="empty-title">No completed trips yet</h3>
+            <p class="empty-desc">Once you complete carpools across Bhopal, your verified trip receipts and environmental savings will accumulate here.</p>
+          </div>
+        </section>
+
+        <!-- ==============================================
+             7. CAMPUS HUBS & ROUTES VIEW (Bhopal City)
+             ============================================== -->
+        <section id="campus-hubs-view" class="view-section" aria-labelledby="hubs-heading">
+          <div class="page-header-row">
+            <div>
+              <h2 class="view-title" id="hubs-heading">Bhopal Campus Carpool Hubs & Pick-up Zones</h2>
+              <p class="view-subtitle">Well-lit, high-visibility meeting points recommended for student carpooling in Bhopal.</p>
+            </div>
+          </div>
+
+          <div class="campus-hubs-grid">
+            <div class="card hub-card">
+              <div class="hub-header">
+                <span class="hub-badge">Hub #1</span>
+                <span class="hub-safety-badge"><i data-lucide="shield"></i> High Security</span>
+              </div>
+              <h3 class="hub-title">MANIT Bhopal (Main Gate & Flagpole)</h3>
+              <p class="hub-location"><i data-lucide="map-pin"></i> Link Road 3 • Near Mata Mandir</p>
+              <p class="hub-desc">Central pickup point for engineering students. Features campus security guard cabin, lit waiting shelter, and 10-minute passenger boarding bay.</p>
+              <div class="hub-amenities">
+                <span>24/7 Guard Post</span>
+                <span>Covered Shelter</span>
+                <span>ATM & Canteen</span>
+              </div>
+              <button class="btn btn-sm btn-outline-forest btn-filter-hub" data-hub="MANIT Bhopal (Main Gate)">
+                Find Rides from Here
+              </button>
+            </div>
+
+            <div class="card hub-card">
+              <div class="hub-header">
+                <span class="hub-badge">Hub #2</span>
+                <span class="hub-safety-badge"><i data-lucide="shield"></i> Campus Transit Bay</span>
+              </div>
+              <h3 class="hub-title">Barkatullah University (BU Campus Gate)</h3>
+              <p class="hub-location"><i data-lucide="map-pin"></i> Hoshangabad Road • Near AIIMS Underpass</p>
+              <p class="hub-desc">Main meeting zone for BU students commuting towards Arera Colony, MP Nagar, and Kolar Road. Well-lit bus stop bay.</p>
+              <div class="hub-amenities">
+                <span>CCTV Monitored</span>
+                <span>Metro Station Proximity</span>
+                <span>Wide Drop Bay</span>
+              </div>
+              <button class="btn btn-sm btn-outline-forest btn-filter-hub" data-hub="Barkatullah University (Hoshangabad Rd Gate)">
+                Find Rides from Here
+              </button>
+            </div>
+
+            <div class="card hub-card">
+              <div class="hub-header">
+                <span class="hub-badge">Hub #3</span>
+                <span class="hub-safety-badge"><i data-lucide="shield"></i> World-Class Transit</span>
+              </div>
+              <h3 class="hub-title">Rani Kamlapati Railway Station (RKMP)</h3>
+              <p class="hub-location"><i data-lucide="map-pin"></i> Platform 1 Carpool Bay • Habibganj</p>
+              <p class="hub-desc">Prime multimodal transit exchange point connecting weekend outstation travelers with campus commuters from MANIT and BU.</p>
+              <div class="hub-amenities">
+                <span>24/7 Operation</span>
+                <span>Luggage Friendly</span>
+                <span>Food Court & Seating</span>
+              </div>
+              <button class="btn btn-sm btn-outline-forest btn-filter-hub" data-hub="Rani Kamlapati Railway Station (RKMP)">
+                Find Rides from Here
+              </button>
+            </div>
+
+            <div class="card hub-card">
+              <div class="hub-header">
+                <span class="hub-badge">Hub #4</span>
+                <span class="hub-safety-badge"><i data-lucide="shield"></i> City Commercial Hub</span>
+              </div>
+              <h3 class="hub-title">MP Nagar Zone-1 & DB City Mall</h3>
+              <p class="hub-location"><i data-lucide="map-pin"></i> Arera Hills Junction • Chetak Bridge Link</p>
+              <p class="hub-desc">Frequent student destination for internships, coaching centers, and shopping. Ample curbside meeting space.</p>
+              <div class="hub-amenities">
+                <span>High Visibility</span>
+                <span>Transit Crossroads</span>
+                <span>Emergency Kiosk</span>
+              </div>
+              <button class="btn btn-sm btn-outline-forest btn-filter-hub" data-hub="MP Nagar Zone-1 (DB Mall Circle)">
+                Find Rides from Here
+              </button>
+            </div>
+
+            <div class="card hub-card">
+              <div class="hub-header">
+                <span class="hub-badge">Hub #5</span>
+                <span class="hub-safety-badge"><i data-lucide="shield"></i> North Campus Hub</span>
+              </div>
+              <h3 class="hub-title">RGPV Campus (Airport Road Gate)</h3>
+              <p class="hub-location"><i data-lucide="map-pin"></i> Gandhi Nagar • Near VIP Road link</p>
+              <p class="hub-desc">Northern Bhopal technical campus gateway with direct road access to Lalghati and Raja Bhoj Airport.</p>
+              <div class="hub-amenities">
+                <span>Main Security Gate</span>
+                <span>Solar Streetlights</span>
+                <span>Vehicle Checkpost</span>
+              </div>
+              <button class="btn btn-sm btn-outline-forest btn-filter-hub" data-hub="RGPV Campus (Airport Road Gate)">
+                Find Rides from Here
+              </button>
+            </div>
+          </div>
+
+          <!-- Fair Share Policy Card in INR -->
+          <div class="card fair-share-card">
+            <div class="fair-share-icon">
+              <i data-lucide="scale"></i>
+            </div>
+            <div>
+              <h3 class="fair-share-title">How RideLink Fair-Share Cost Splitting Works (in ₹)</h3>
+              <p class="fair-share-desc">Under campus guidelines, carpool contributions are non-commercial reimbursements calculated strictly from fuel expenses. The formula used across all Bhopal rides is:</p>
+              <div class="math-box">
+                <code>Per-Passenger Contribution (₹) = Total Trip Fuel Expense ÷ (Offered Passenger Seats + 1 Driver)</code>
+              </div>
+              <p class="math-note">Example: A ₹120 commute from MANIT to RKMP offering 3 passenger seats splits 4 ways among 4 travelers (₹120 ÷ 4) = ₹30 per person (estimated). The driver covers their own equal share.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==============================================
+             8. PROFILE & PREFERENCES VIEW
+             ============================================== -->
+        <section id="profile-view" class="view-section" aria-labelledby="profile-heading">
+          <div class="page-header-row">
+            <div>
+              <h2 class="view-title" id="profile-heading">Bhopal Student Commuter Profile</h2>
+              <p class="view-subtitle">Manage your college verification, vehicle details, and carpooling preferences.</p>
+            </div>
+          </div>
+
+          <div class="profile-layout">
+            <div class="card profile-info-card">
+              <div class="profile-card-header">
+                <div class="profile-avatar-large-wrap">
+                  <img src="" alt="Profile Photo" id="profile-display-avatar" class="profile-avatar-large">
+                </div>
+                <div class="profile-header-info">
+                  <h3 class="profile-display-name" id="profile-display-name">Aarav Sharma</h3>
+                  <p class="profile-display-major" id="profile-display-major">Senior • MANIT Bhopal</p>
+                  <div class="profile-tags">
+                    <span class="badge badge-success"><i data-lucide="shield-check"></i> Verified Student</span>
+                    <span class="badge badge-neutral" id="profile-display-role-badge">Driver & Passenger</span>
+                    <span class="badge badge-emerald" id="profile-display-rating">★ 4.9 (24 reviews)</span>
+                  </div>
+                </div>
+              </div>
+
+              <form id="profile-edit-form" class="profile-form">
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="profile-name" class="form-label required">Full Name</label>
+                    <input type="text" id="profile-name" class="form-control" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="profile-major" class="form-label required">College, Department & Year</label>
+                    <input type="text" id="profile-major" class="form-control" placeholder="e.g. Senior • MANIT Computer Science" required>
+                  </div>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="profile-phone" class="form-label">Phone / WhatsApp for Ride Coordination</label>
+                    <input type="tel" id="profile-phone" class="form-control" placeholder="+91 98260 12345">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="profile-email" class="form-label">College Email (.ac.in / .edu)</label>
+                    <input type="email" id="profile-email" class="form-control" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="profile-bio" class="form-label">Bio / Commuter Notes</label>
+                  <textarea id="profile-bio" class="form-control" rows="3" placeholder="Tell fellow students about your commute route, timings, or vehicle comfort..."></textarea>
+                </div>
+
+                <div class="form-section-title">
+                  <i data-lucide="car"></i> Vehicle Details (For Bhopal Drivers)
+                </div>
+
+                <div class="form-row-3">
+                  <div class="form-group">
+                    <label for="profile-car-model" class="form-label">Car Model</label>
+                    <input type="text" id="profile-car-model" class="form-control" placeholder="e.g. Hyundai i20">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="profile-car-color" class="form-label">Car Color</label>
+                    <input type="text" id="profile-car-color" class="form-control" placeholder="e.g. Silver">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="profile-plate" class="form-label">Registration (MP-04...)</label>
+                    <input type="text" id="profile-plate" class="form-control" placeholder="e.g. MP-04-AB-4821">
+                  </div>
+                </div>
+
+                <div class="form-section-title">
+                  <i data-lucide="shield"></i> Privacy & Safety Preferences
+                </div>
+
+                <div class="form-group">
+                  <label class="custom-checkbox">
+                    <input type="checkbox" id="profile-women-only-pref">
+                    <span class="checkbox-indicator"></span>
+                    <span class="checkbox-label">
+                      <strong>Participate in Women-Only Carpools</strong>
+                      <span class="checkbox-desc">Filter and highlight verified women-only student carpools automatically.</span>
+                    </span>
+                  </label>
+                </div>
+
+                <div class="form-actions-row">
+                  <button type="submit" class="btn btn-primary" id="btn-save-profile">
+                    <i data-lucide="save"></i> Save Profile Changes
+                  </button>
+                  <span class="save-status-msg" id="profile-save-feedback"></span>
+                </div>
+              </form>
+            </div>
+
+            <!-- Profile Sidebar Card -->
+            <div class="profile-side-col">
+              <div class="card profile-stat-summary">
+                <h4 class="card-title">Campus Carpool Impact</h4>
+                <div class="impact-stat-row">
+                  <div class="impact-icon-circle icon-green">
+                    <i data-lucide="tree-pine"></i>
+                  </div>
+                  <div>
+                    <strong class="impact-stat-val" id="profile-impact-trees">4.2 trees</strong>
+                    <span class="impact-stat-label">Equivalent carbon offset</span>
+                  </div>
+                </div>
+
+                <div class="impact-stat-row">
+                  <div class="impact-icon-circle icon-amber">
+                    <i data-lucide="piggy-bank"></i>
+                  </div>
+                  <div>
+                    <strong class="impact-stat-val" id="profile-impact-saved">₹2,450</strong>
+                    <span class="impact-stat-label">Total fuel expense saved</span>
+                  </div>
+                </div>
+
+                <div class="impact-stat-row">
+                  <div class="impact-icon-circle icon-blue">
+                    <i data-lucide="award"></i>
+                  </div>
+                  <div>
+                    <strong class="impact-stat-val">Bhopal Eco-Driver</strong>
+                    <span class="impact-stat-label">Campus Green Mobility Badge</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Demo Reset Box -->
+              <div class="card demo-reset-box">
+                <h4 class="reset-box-title"><i data-lucide="database"></i> Local Storage & Reset</h4>
+                <p class="reset-box-desc">All rides and bookings are stored in your browser's localStorage for this demo. Reset anytime to test a clean state.</p>
+                <button class="btn btn-outline-danger btn-block" id="btn-profile-reset-demo">
+                  <i data-lucide="rotate-ccw"></i> Reset Demo to Initial State
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       MODALS
+       ============================================== -->
+
+  <!-- 1. RIDE DETAILS & SEAT REQUEST MODAL -->
+  <div class="modal-backdrop" id="ride-details-modal" role="dialog" aria-modal="true" aria-labelledby="modal-ride-title" style="display: none;">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-badge-pill" id="modal-ride-status-pill">Active Ride</span>
+          <h3 class="modal-title" id="modal-ride-title">Ride Details</h3>
+        </div>
+        <button class="btn-icon-ghost btn-close-modal" data-close="ride-details-modal" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body" id="modal-ride-body">
+        <!-- Content injected dynamically -->
+      </div>
+
+      <div class="modal-footer" id="modal-ride-footer">
+        <!-- Action buttons injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. SEAT REQUEST SUBMISSION MODAL -->
+  <div class="modal-backdrop" id="request-seat-modal" role="dialog" aria-modal="true" aria-labelledby="modal-request-heading" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-request-heading">Request a Seat</h3>
+        <button class="btn-icon-ghost btn-close-modal" data-close="request-seat-modal" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <form id="form-submit-seat-request">
+        <div class="modal-body">
+          <div class="modal-trip-summary" id="request-trip-summary">
+            <!-- Injected route overview -->
+          </div>
+
+          <div class="form-group">
+            <label for="request-pickup-stop" class="form-label required">Pickup Location in Bhopal</label>
+            <select id="request-pickup-stop" class="form-control" required>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="request-dropoff-stop" class="form-label required">Drop-off Location</label>
+            <select id="request-dropoff-stop" class="form-control" required>
+              <!-- Populated dynamically -->
+            </select>
+            <span class="field-error" id="error-request-stops"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="request-note" class="form-label">Note for the Driver <span class="label-sub">(optional)</span></label>
+            <textarea id="request-note" class="form-control" rows="2" placeholder="e.g. I will be waiting near MANIT flagpole with a backpack."></textarea>
+          </div>
+
+          <div class="request-cost-notice">
+            <div class="cost-notice-row">
+              <span>Estimated Fuel Contribution:</span>
+              <strong id="request-modal-cost">₹30</strong>
+            </div>
+            <p class="cost-notice-sub">Fair-share fuel expense will be shared directly with your fellow student driver upon boarding.</p>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost btn-close-modal" data-close="request-seat-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-confirm-send-request">
+            <i data-lucide="send"></i> Send Request
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. CANCEL BOOKING CONFIRMATION MODAL -->
+  <div class="modal-backdrop" id="cancel-booking-modal" role="dialog" aria-modal="true" aria-labelledby="modal-cancel-heading" style="display: none;">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-header">
+        <div class="modal-danger-icon">
+          <i data-lucide="alert-triangle"></i>
+        </div>
+        <h3 class="modal-title" id="modal-cancel-heading">Cancel Booking?</h3>
+        <button class="btn-icon-ghost btn-close-modal" data-close="cancel-booking-modal" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="dialog-msg">Are you sure you want to cancel this booking? If this was a confirmed seat, it will immediately be returned to the driver's available seat count so other students can ride.</p>
+        <div class="dialog-item-preview" id="cancel-preview-info"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost btn-close-modal" data-close="cancel-booking-modal">Keep Booking</button>
+        <button type="button" class="btn btn-danger" id="btn-confirm-cancel-booking">
+          <i data-lucide="x-circle"></i> Yes, Cancel Booking
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. DEMO PERSONA SWITCHER MODAL -->
+  <div class="modal-backdrop" id="persona-switch-modal" role="dialog" aria-modal="true" aria-labelledby="modal-persona-title" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="badge badge-neutral">Judges & Testing Tool</span>
+          <h3 class="modal-title" id="modal-persona-title">Switch Bhopal Demo Persona</h3>
+        </div>
+        <button class="btn-icon-ghost btn-close-modal" data-close="persona-switch-modal" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="demo-explainer-banner">
+          <i data-lucide="info"></i>
+          <div>
+            <strong>Interactive Two-Sided Role Model (Bhopal)</strong>
+            <p>Switch between the Driver and Passenger personas below to test offering a ride, requesting a seat, approving inquiries, and seat availability decrements.</p>
+          </div>
+        </div>
+
+        <div class="persona-selection-list" id="persona-list-container">
+          <!-- Personas generated dynamically -->
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost btn-close-modal" data-close="persona-switch-modal">Close</button>
+        <button type="button" class="btn btn-outline-danger" id="btn-modal-reset-demo">
+          <i data-lucide="rotate-ccw"></i> Reset All Data
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- BOTTOM MOBILE NAVIGATION BAR -->
+  <nav class="mobile-nav-bar mobile-only" aria-label="Mobile Navigation">
+    <a href="#dashboard" class="mobile-nav-item active" data-view="dashboard">
+      <i data-lucide="layout-dashboard"></i>
+      <span>Home</span>
+    </a>
+    <a href="#find-rides" class="mobile-nav-item" data-view="find-rides">
+      <i data-lucide="search"></i>
+      <span>Find</span>
+    </a>
+    <a href="#offer-ride" class="mobile-nav-item" data-view="offer-ride">
+      <i data-lucide="plus-circle"></i>
+      <span>Offer</span>
+    </a>
+    <a href="#my-bookings" class="mobile-nav-item" data-view="my-bookings">
+      <i data-lucide="ticket"></i>
+      <span>Bookings</span>
+      <span class="mobile-dot" id="mobile-bookings-dot" style="display:none;"></span>
+    </a>
+    <a href="#driver-requests" class="mobile-nav-item" data-view="driver-requests">
+      <i data-lucide="inbox"></i>
+      <span>Requests</span>
+      <span class="mobile-dot pending" id="mobile-requests-dot" style="display:none;"></span>
+    </a>
+  </nav>
+
+  <!-- Script logic -->
+  <script src="app.js"></script>
+</body>
+</html>
